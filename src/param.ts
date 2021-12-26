@@ -50,7 +50,7 @@ export class Param {
             }
             return r;
         }, {});
-        const header = new Param({ name: 'header', type: 'object', in: 'header', properties: [] });
+        const header = new Param({ name: 'header', type: 'any', in: 'header', properties: [] });
         parameters.header = parameters.header || header;
         // sort params
         ['query', 'body', 'header'].filter(x => x in parameters).forEach(key => result.push(parameters[key]));
