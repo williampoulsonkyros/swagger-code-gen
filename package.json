@@ -1,7 +1,7 @@
 {
-  "name": "swagger-code-generate",
+  "name": "swagger-code-generate-eslint",
   "version": "2.2.4",
-  "description": "A swagger code generator for typescript",
+  "description": "A swagger code generator for typescript that is compatible with eslint",
   "main": "index.js",
   "scripts": {
     "test": "npm run build&&node test/example.js",
@@ -14,7 +14,8 @@
   },
   "keywords": [
     "swagger",
-    "codegen"
+    "codegen",
+    "eslint"
   ],
   "author": "fisher <i.yu@qq.com>",
   "license": "ISC",
