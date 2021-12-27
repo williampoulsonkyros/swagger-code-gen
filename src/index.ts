@@ -13,17 +13,17 @@ function merge(obj: any, ...args: any) {
     return _.mergeWith(obj, ...args, customizer);
 }
 
-export function generate(config: Record<string, IConfig>) {
+export async function generate(config: Record<string, IConfig>) {
     const configurations = Object.keys(config)
         .filter(name => name !== 'common')
         .map(name => merge({}, defaultConfig, config.common, config[name], { name }));
     const promises = configurations.map(cfg => new Generator(cfg).generate());
     const log = (name: string, func: number) => console.log(`${name}:`, `function:${func}`);
     return Promise.all(promises).then((items) => {
-        const total = items.reduce((total, item) => {
+        const total = items.reduce((totalFuncs, item) => {
             log(item.data.config.name, item.data.methods.length);
-            total.func += item.data.methods.length;
-            return total;
+            totalFuncs.func += item.data.methods.length;
+            return totalFuncs;
         }, { func: 0, defs: 0 });
         log('total', total.func);
         const cfg = merge(defaultConfig, config.common);

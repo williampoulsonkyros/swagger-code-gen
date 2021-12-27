@@ -35,8 +35,10 @@ declare module "swagger-code-generate/src/config" {
          * The http request host, if the value is false, no host will be added to the url
          * @example petstore.swagger.io
          */
-        host?: string | false;
+        host?: string;
         /**
+         * host?: string | false;
+         *
          * The http request scheme
          * @example https
          */
@@ -212,6 +214,7 @@ declare module "swagger-code-generate/src/generator" {
             schema?: object;
         }, config: IConfig, definitions: Definition[]): string;
         generate(): Promise<any>;
+        private isHttpSwaggerSource;
     }
 }
 declare module "swagger-code-generate" {

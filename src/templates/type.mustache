@@ -1,21 +1,21 @@
+/* eslint-disable no-trailing-spaces, @typescript-eslint/naming-convention, @typescript-eslint/no-empty-interface */
+
 {{#config.imports}}
 {{{.}}}
 {{/config.imports}}
-import config from './config';
+import config from './config'
 
-export type $Select<T, K> = K extends keyof T ? T[K] : T;
+export type $Select<T, K> = K extends keyof T ? T[K] : T
 export type $Optional<T, K extends keyof any> = Omit<T, K> & {
-    [P in Extract<K, keyof T>]?: T[P];
+    [P in Extract<K, keyof T>]?: T[P]
 }
 export type $Required<T> = {
-    [P in keyof T]-?: $Required<T[P]>;
+    [P in keyof T]-?: $Required<T[P]>
 }
 export type KeyValue<K, V> = {
-    key: K;
-    value: V;
+    key: K
+    value: V
 }
-
-//#region Definitions
 
 {{#definitions}}
 /**
@@ -25,9 +25,10 @@ interface {{&name}} {
     {{#properties}}
     /**
      * {{{description}}}.{{{originTitle}}}
+     *
      {{#default}}
      * @default {{{default}}}
-     {{/default}}
+         {{/default}}
      {{#example}}
      * @example {{{example}}}
      {{/example}}
@@ -35,7 +36,7 @@ interface {{&name}} {
      * @deprecated
      {{/deprecated}}
      **/
-    {{#config.securePropertyName}}'{{/config.securePropertyName}}{{&name}}{{#config.securePropertyName}}'{{/config.securePropertyName}}{{^required}}?{{/required}}: {{#generic}}T{{&name}}{{#isArray}}[]{{/isArray}}{{/generic}}{{^generic}}{{&type}}{{/generic}};
+    {{#config.securePropertyName}}'{{/config.securePropertyName}}{{&name}}{{#config.securePropertyName}}'{{/config.securePropertyName}}{{^required}}?{{/required}}: {{#generic}}T{{&name}}{{#isArray}}[]{{/isArray}}{{/generic}}{{^generic}}{{&type}}{{/generic}}
     {{/properties}}
 }
 {{/definitions}} 
@@ -48,6 +49,7 @@ interface {{&typeName}} {
     {{#properties}}
     /**
      * {{{description}}}
+     *
      {{#default}}
      * @default {{&default}}
      {{/default}}
@@ -55,16 +57,13 @@ interface {{&typeName}} {
      * @deprecated
      {{/deprecated}}
      **/
-    {{#config.securePropertyName}}'{{/config.securePropertyName}}{{&name}}{{#config.securePropertyName}}'{{/config.securePropertyName}}{{^required}}?{{/required}}: {{&type}};
+    {{#config.securePropertyName}}'{{/config.securePropertyName}}{{&name}}{{#config.securePropertyName}}'{{/config.securePropertyName}}{{^required}}?{{/required}}: {{&type}}
     {{/properties}}
 }
 {{/properties.length}}
 {{/referenced}}
 {{/parameters}}
 {{/methods}}
-//#endregion
-
-//#region Functions
 
 // {{{info.title}}}
 // {{{info.version}}}
@@ -73,6 +72,7 @@ interface {{&typeName}} {
 
 /**
  * {{{summary}}}
+ *
 {{#parameters}}
  * @param {{{name}}} {{{description}}}
 {{/parameters}}
@@ -80,9 +80,12 @@ interface {{&typeName}} {
  * @deprecated
 {{/deprecated}}
  */
-export function {{{name}}}({{#parameters}}{{{name}}}{{^required}}?{{/required}}: {{&type}}, {{/parameters}}): Promise<{{{response}}}> {
-    const url = `{{{url}}}`;
-    return config.request({ url, method: '{{&method}}', {{#parameters}}{{#passable}}{{{name}}}, {{/passable}}{{/parameters}}});
+export const {{{name}}} = (
+    {{#parameters}}
+    {{{name}}}{{^required}}?{{/required}}: {{&type}},
+    {{/parameters}}
+): Promise<{{{response}}}> => {
+    const url = `{{{url}}}`
+    return config.request({ url, method: '{{&method}}', {{#parameters}}{{#passable}}{{{name}}}, {{/passable}}{{/parameters}}})
 }
 {{/methods}}
-//#endregion

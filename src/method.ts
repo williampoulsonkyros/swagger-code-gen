@@ -20,7 +20,7 @@ export class Method {
         this.method = data.method;
         this.path = data.path;
         this.url = `${swagger.basePath}/${data.path}`.replace(/\/+/g, '/');
-        if (config.host !== false) {
+        if (!!config.host) {
             let { host, scheme } = config;
             host = _.isString(host) ? host : swagger.host;
             scheme = _.isString(scheme) ? scheme : (swagger.schemes && swagger.schemes[0]) || 'https';

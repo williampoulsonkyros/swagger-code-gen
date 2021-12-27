@@ -150,8 +150,12 @@ class Generator {
         const { source, templates, rename } = this.config;
         if (!source)
             throw new Error("The option 'source' is required");
-        return node_fetch_1.default(source)
-            .then(res => res.json())
+        const isHttpSource = this.isHttpSwaggerSource(source);
+        const swaggerSource = isHttpSource
+            ? node_fetch_1.default(source).then(res => res.json()).catch(err => { console.log(err); throw err; })
+            : Promise.resolve(JSON.parse(fs_extra_1.default.readFileSync(source).toString())).catch(err => { console.log(err); throw err; });
+        // const g = new Promise((resolve, reject) => { }))
+        return swaggerSource
             .then((json) => {
             const definitions = definition_1.Definition.parse(json, this.config);
             return {
@@ -162,6 +166,9 @@ class Generator {
             };
         })
             .then(view => Generator.render(view, templates.type, rename.file({ name: this.config.name }), this.config));
+    }
+    isHttpSwaggerSource(source) {
+        return source.toLowerCase().startsWith('http');
     }
 }
 exports.Generator = Generator;
@@ -229,17 +236,17 @@ function merge(obj, ...args) {
     }
     return lodash_1.default.mergeWith(obj, ...args, customizer);
 }
-function generate(config) {
+async function generate(config) {
     const configurations = Object.keys(config)
         .filter(name => name !== 'common')
         .map(name => merge({}, config_1.defaultConfig, config.common, config[name], { name }));
     const promises = configurations.map(cfg => new generator_1.Generator(cfg).generate());
     const log = (name, func) => console.log(`${name}:`, `function:${func}`);
     return Promise.all(promises).then((items) => {
-        const total = items.reduce((total, item) => {
+        const total = items.reduce((totalFuncs, item) => {
             log(item.data.config.name, item.data.methods.length);
-            total.func += item.data.methods.length;
-            return total;
+            totalFuncs.func += item.data.methods.length;
+            return totalFuncs;
         }, { func: 0, defs: 0 });
         log('total', total.func);
         const cfg = merge(config_1.defaultConfig, config.common);
@@ -313,7 +320,7 @@ class Method {
         this.method = data.method;
         this.path = data.path;
         this.url = `${swagger.basePath}/${data.path}`.replace(/\/+/g, '/');
-        if (config.host !== false) {
+        if (!!config.host) {
             let { host, scheme } = config;
             host = lodash_1.default.isString(host) ? host : swagger.host;
             scheme = lodash_1.default.isString(scheme) ? scheme : (swagger.schemes && swagger.schemes[0]) || 'https';
@@ -411,7 +418,7 @@ class Param {
             }
             return r;
         }, {});
-        const header = new Param({ name: 'header', type: 'object', in: 'header', properties: [] });
+        const header = new Param({ name: 'header', type: 'any', in: 'header', properties: [] });
         parameters.header = parameters.header || header;
         // sort params
         ['query', 'body', 'header'].filter(x => x in parameters).forEach(key => result.push(parameters[key]));

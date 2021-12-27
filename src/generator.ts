@@ -1,4 +1,4 @@
-import fs from 'fs-extra';
+import fs, { promises } from 'fs-extra';
 import mustache from 'mustache';
 import _ from 'lodash';
 import fetch from 'node-fetch';
@@ -44,10 +44,19 @@ export class Generator {
         return config.typeFormatter(type);
     }
     generate() {
+
         const { source, templates, rename } = this.config;
+
         if (!source) throw new Error("The option 'source' is required");
-        return fetch(source)
-            .then(res => res.json())
+
+        const isHttpSource = this.isHttpSwaggerSource(source)
+        const swaggerSource = isHttpSource
+            ? fetch(source).then(res => res.json()).catch(err => { console.log(err); throw err })
+            : Promise.resolve(JSON.parse(fs.readFileSync(source).toString())).catch(err => { console.log(err); throw err })
+
+
+        // const g = new Promise((resolve, reject) => { }))
+        return swaggerSource
             .then((json: any) => {
                 const definitions = Definition.parse(json, this.config);
                 return {
@@ -58,5 +67,9 @@ export class Generator {
                 }
             })
             .then(view => Generator.render(view, templates.type, rename.file({ name: this.config.name }), this.config))
+    }
+
+    private isHttpSwaggerSource(source: string) {
+        return source.toLowerCase().startsWith('http')
     }
 }

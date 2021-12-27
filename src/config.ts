@@ -36,8 +36,10 @@ export interface IConfig {
      * The http request host, if the value is false, no host will be added to the url
      * @example petstore.swagger.io
      */
-    host?: string | false;
+    host?: string
     /**
+     * host?: string | false;
+     *
      * The http request scheme
      * @example https
      */
@@ -58,6 +60,7 @@ export interface IConfig {
      * Whether to enable the secure property name, the property name will wrapped with double quotes if enabled.
      */
     securePropertyName?: boolean;
+
 }
 
 export const defaultConfig: IConfig = {
