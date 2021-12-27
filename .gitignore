@@ -2,6 +2,5 @@ node_modules/
 *.tgz
 dts/
 src/apis/
-/templates/
 *apis
 /test
