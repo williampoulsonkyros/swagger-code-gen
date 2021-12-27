@@ -14,7 +14,8 @@
   },
   "keywords": [
     "swagger",
-    "codegen"
+    "codegen",
+    "eslint"
   ],
   "author": "fisher <i.yu@qq.com>",
   "license": "ISC",
