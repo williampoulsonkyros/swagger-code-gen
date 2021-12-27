@@ -44,5 +44,8 @@
     "lodash": "^4.17.21",
     "mustache": "^4.2.0",
     "node-fetch": "^2.6.6"
-  }
+  },
+  "files": [
+    "./src/templates/type.mustache"
+  ]
 }
